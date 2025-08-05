@@ -30,8 +30,6 @@ while True:
     if not ret:
         break
 
-    cv2.imshow('Webcam', frame)
-
     if cv2.waitKey(1) == 27:    #ESC 누르면 종료
         break
 
