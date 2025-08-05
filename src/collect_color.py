@@ -2,6 +2,26 @@ import cv2
 import csv
 import os
 
+# 색상 샘플
+color_sample = {
+    ord('1'): 'red',
+    ord('2'): 'blue',
+    ord('3'): 'green',
+    ord('4'): 'yellow',
+    ord('5'): 'black',
+    ord('6'): 'white',
+    ord('7'): 'gray',
+}
+
+# 저장할 파일 경로
+csv_path = '../color_dataset.csv'
+
+# 파일 존재하지 않으면 헤더 추가
+if not os.path.exists(csv_path):
+    with open(csv_path, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(['R', 'G', 'B', 'label'])
+
 # 웹캠 연결
 cap = cv2.VideoCapture(0)
 cv2.namedWindow('Color Collector')
