@@ -31,3 +31,14 @@ labels = label.flatten()
 counts = np.bincount(labels)
 total_pixels = counts.sum()
 ratios = counts / total_pixels
+
+# 분석 결과 출력
+print("\n[색상 분석 결과]")
+for i in range(K):
+    print(f"{i+1}.BGR : {center[i].tolist()} / 픽셀 수 : {counts[i]} / 비율 : {ratios[i] : .2%}")
+
+# 색상 이미지 생성
+palette = np.zeros((50, 100 * K, 3), dtype=np.uint8)
+for i in range(K):
+    palette[:, i*100:(i+1)*100] = center[i]
+    
