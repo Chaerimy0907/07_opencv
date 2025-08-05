@@ -12,3 +12,33 @@
 6. 사용자 인터페이스 구현
 '''
 
+import cv2
+import csv
+import numpy as np
+
+# 마우스 콜백 함수
+roi = None
+def mouse_callback(event, x, y, flags, param):
+    global roi
+    if event == cv2.EVENT_LBUTTONDOWN:
+        h, w = 100, 100
+        x1, y1 = max(0, x-w//2), max(0, y-h//2)
+        x2, y2 = x1+w, y1+h
+        roi = (x1, y1, x2, y2)
+
+# 웹캠 설정
+cap = cv2.VideoCapture(0)
+cv2.namedWindow('Predict Color')
+cv2.setMouseCallback('Predict Color', mouse_callback)
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    if roi:
+        x1, y1, x2, y2 = roi
+        cv2.rectangle(frame, (x1, y1, x2, y2), (255, 255, 255), 2)
+
+cap.release()
+cv2.destroyAllWindows()
