@@ -56,8 +56,8 @@ colors_rgb = [center[i][::-1] / 255.0 for i in range(K)]    # BGR -> RGB
 label_text = [f'{i+1}' for i in range(K)]
 
 plt.figure(figsize=(5,5))
-plt.pie(ratios, labels=label_text, colors=colors_rgb, autopct='%1.1f%%')
-plt.title('색상 비율 분포')
+plt.pie(ratios, labels= label_text, colors=colors_rgb, autopct='%1.1f%%')
+plt.title('Ratios')
 plt.show()
 
 cv2.waitKey(0)
