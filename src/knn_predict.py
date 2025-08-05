@@ -2,18 +2,16 @@ import csv
 import random
 import math
 
+samples = []
+labels = []
+
 # CSV 파일 불러오기
-data = []
-with open('color_dataset.csv', 'r') as f:   # 학습 데이터 로드
+with open('color_dataset.csv', 'r') as f:
     reader = csv.reader(f)
     next(reader)
     for row in reader:
-        r, g, b = map(int, row[:3])
+        r, g, b , label = row
         label = row[3]
-        data.append(((r/255, g/255, b/255), label)) # RGB 값 정규화
-
-# 데이터 학습/테스트 분할
-random.shuffle(data)
-split_idx = int(len(data) * 0.8)
-train_data = data[:split_idx]
-test_data = data[split_idx:]
+        # RGB 값 정규화 
+        samples.append([int(r)/255, int(g)/255, int(b)/255])
+        labels.append(label)
