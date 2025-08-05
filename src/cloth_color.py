@@ -11,3 +11,7 @@
 - 결과 시각화
 6. 사용자 인터페이스 구현
 '''
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
