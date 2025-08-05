@@ -39,45 +39,50 @@ train_labels = np.array([label_to_num[l] for l in labels], dtype=np.int32)
 knn = cv2.ml.KNearest_create()
 knn.train(train_data, cv2.ml.ROW_SAMPLE, train_labels)
 
-# 마우스 콜백 함수
-roi = None
-def mouse_callback(event, x, y, flags, param):
-    global roi
-    if event == cv2.EVENT_LBUTTONDOWN:
-        h, w = 100, 100
-        x1, y1 = max(0, x-w//2), max(0, y-h//2)
-        x2, y2 = x1+w, y1+h
-        roi = (x1, y1, x2, y2)
-
 # 웹캠 설정
 cap = cv2.VideoCapture(0)
-cv2.namedWindow('Predict Color')
-cv2.setMouseCallback('Predict Color', mouse_callback)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
+win_name = 'Color Prediction'
+
+roi = None
 
 while True:
     ret, frame = cap.read()
     if not ret:
         break
 
-    if roi:
-        x1, y1, x2, y2 = roi
-        cv2.rectangle(frame, (x1, y1, x2, y2), (255, 255, 255), 2)
+    display = frame.copy()
 
-        # ROI에서 평균 색 추출
-        roi_img = frame[y1:y2, x1:x2]
-        mean_color = roi_img.mean(axis=(0, 1))  # BGR
-        sample = np.array([[mean_color[2]/255.0, mean_color[1]/255.0, mean_color[0]/255.0]], dtype=np.float32)
+    if roi is not None:
+        x, y, w, h = roi
+        cv2.rectangle(display, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
+        roi_area = frame[y:y+h, x:x+w]
+        avg_color = cv2.mean(roi_area)[:3]
+        r, g, b = avg_color[2], avg_color[1], avg_color[0]
+        input_data = np.array([[r/255.0, g/255.0, b/255.0]], dtype=np.float32)
 
         # 예측
-        ret, result, neighbors, dist = knn.findNearest(sample, k=1)
-        pred_label = num_to_label[int(result[0][0])]
+        ret, result, neighbors, dist = knn.findNearest(input_data, k=1)
+        pred_label = int(result[0][0])
+        label_name = num_to_label
 
         # 화면에 출력
-        cv2.putText(frame, f"Predicted : {pred_label}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        cv2.putText(display, f"Predicted : {label_name[pred_label]}", 
+                    (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 
+                    0.8, (0, 255, 0), 2, cv2.LINE_AA)
 
-    cv2.imshow("Predict Color", frame)
+    cv2.imshow(win_name, display)
+
     if cv2.waitKey(1) == 27:
         break
+    elif cv2.waitKey(1) == ord(' '):
+        roi_box = cv2.selectROI(win_name, frame, fromCenter=False, showCrosshair=True)
+        if roi_box[2] > 0 and roi_box[3] > 0:
+            roi = roi_box
+            print(f"ROI 선택됨 : {roi}")
 
 cap.release()
 cv2.destroyAllWindows()
