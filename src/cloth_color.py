@@ -16,6 +16,18 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+# 색상
+color_map = {
+    ord('1') : 'Red',
+    ord('2') : 'Blue',
+    ord('3') : 'Green',
+    ord('4') : 'Yellow',
+    ord('5') : 'Black',
+    ord('6') : 'White',
+    ord('7') : 'Gray'
+}
+
 # 웹캠 연결
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
