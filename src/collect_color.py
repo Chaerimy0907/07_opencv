@@ -3,7 +3,7 @@ import csv
 import os
 
 # 색상 샘플
-color_sample = {
+label_map = {
     ord('1'): 'red',
     ord('2'): 'blue',
     ord('3'): 'green',
@@ -41,10 +41,20 @@ while True:
         break
 
     cv2.imshow('Color Collector', frame)
+    cv2.setMouseCallback('Color Collector', mouse_callback, frame)
 
     key = cv2.waitKey(1)
     if key == 27:  # ESC
         break
+
+    elif key in label_map and click_color is not None:
+        label = label_map[key]
+        r, g, b = click_color
+        print(f"저장됨 : RGB=({r},{g},{b}), Lable={label}")
+        with open(csv_path, 'a', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([r, g, b, label])
+        click_color = None  # 초기화
 
 cap.release()
 cv2.destroyAllWindows()
