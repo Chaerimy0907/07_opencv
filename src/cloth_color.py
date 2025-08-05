@@ -63,5 +63,21 @@ while True:
         x1, y1, x2, y2 = roi
         cv2.rectangle(frame, (x1, y1, x2, y2), (255, 255, 255), 2)
 
+        # ROI에서 평균 색 추출
+        roi_img = frame[y1:y2, x1:x2]
+        mean_color = roi_img.mean(axis=(0, 1))  # BGR
+        sample = np.array([[mean_color[2]/255.0, mean_color[1]/255.0, mean_color[0]/255.0]], dtype=np.float32)
+
+        # 예측
+        ret, result, neighbors, dist = knn.findNearest(sample, k=1)
+        pred_label = num_to_label[int(result[0][0])]
+
+        # 화면에 출력
+        cv2.putText(frame, f"Predicted : {pred_label}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+
+    cv2.imshow("Predict Color", frame)
+    if cv2.waitKey(1) == 27:
+        break
+
 cap.release()
 cv2.destroyAllWindows()
