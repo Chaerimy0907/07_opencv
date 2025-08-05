@@ -16,6 +16,29 @@ import cv2
 import csv
 import numpy as np
 
+# CSV에서 학습 데이터 불러오기
+samples = []
+labels = []
+with open('color_dataset.csv', 'r') as f:
+    next(f)
+    for line in f:
+        r, g, b, label = line.strip().split(',')
+        samples.append([int(r)/255.0, int(g)/255.0, int(b)/255.0])
+        labels.append(label)
+
+# 고유 라벨 목록 및 숫자 라벨 매핑
+unique_labels = sorted(list(set(labels)))
+label_to_num = {label : idx for idx, label in enumerate(unique_labels)}
+num_to_label = {idx: label for label, idx in label_to_num.items()}
+
+# 숫자 라벨로 변환
+train_data = np.array(samples, dtype=np.float32)
+train_labels = np.array([label_to_num[l] for l in labels], dtype=np.int32)
+
+# KNN 모델 학습
+knn = cv2.ml.KNearest_create()
+knn.train(train_data, cv2.ml.ROW_SAMPLE, train_labels)
+
 # 마우스 콜백 함수
 roi = None
 def mouse_callback(event, x, y, flags, param):
