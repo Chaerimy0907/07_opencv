@@ -11,3 +11,9 @@ with open('color_dataset.csv', 'r') as f:   # 학습 데이터 로드
         r, g, b = map(int, row[:3])
         label = row[3]
         data.append(((r/255, g/255, b/255), label)) # RGB 값 정규화
+
+# 데이터 학습/테스트 분할
+random.shuffle(data)
+split_idx = int(len(data) * 0.8)
+train_data = data[:split_idx]
+test_data = data[split_idx:]
