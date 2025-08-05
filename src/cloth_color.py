@@ -15,3 +15,25 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+
+# 웹캠 연결
+cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
+if not cap.isOpened():
+    print("웹캠 연결 안 됨")
+    exit()
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    cv2.imshow('Webcam', frame)
+
+    if cv2.waitKey(1) == 27:    #ESC 누르면 종료
+        break
+
+cap.release()
+cv2.destroyAllWindows()
