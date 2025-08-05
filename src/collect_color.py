@@ -22,6 +22,15 @@ if not os.path.exists(csv_path):
         writer = csv.writer(f)
         writer.writerow(['R', 'G', 'B', 'label'])
 
+# 마우스 이벤트 콜백 함수
+click_color = None
+def mouse_callback(event, x, y, flags, param):
+    global click_color
+    if event == cv2.EVENT_LBUTTONDOWN:
+        frame = param
+        b, g, r = frame[y, x]
+        click_color = (r, g, b)  # RGB로 저장
+
 # 웹캠 연결
 cap = cv2.VideoCapture(0)
 cv2.namedWindow('Color Collector')
